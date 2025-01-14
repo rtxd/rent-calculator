@@ -1,30 +1,39 @@
 <template>
   <div class="container">
-    <h1 class="title">
+    <h1 class="title" id="page-title">
       Monthly Rent Calculator
       <img
-        style="margin-left: 2rem"
+        class="title-icon"
         src="/home.png"
         height="100"
         width="100"
-        alt="Home"
+        alt="Home icon"
+        aria-hidden="true"
       />
     </h1>
-    <div class="rent-info">
-      <div class="navigation">
-        <button
-          class="nav-button"
-          @click="previousMonth"
-          aria-label="Previous month"
-        >
-          &lt; Previous
-        </button>
-        <p class="period">Current Period: {{ rentPeriodDisplay }}</p>
-        <button class="nav-button" @click="nextMonth" aria-label="Next month">
-          Next &gt;
-        </button>
+    <div class="rent-info" role="main" aria-labelledby="page-title">
+      <div class="navigation" role="group" aria-label="Period navigation">
+        <p class="period" aria-live="polite">
+          Current Period: {{ rentPeriodDisplay }}
+        </p>
+        <div class="button-group">
+          <button
+            class="nav-button"
+            @click="previousMonth"
+            aria-label="View previous month's rent"
+          >
+            <span aria-hidden="true">&lt;</span> Previous
+          </button>
+          <button
+            class="nav-button"
+            @click="nextMonth"
+            aria-label="View next month's rent"
+          >
+            Next <span aria-hidden="true">&gt;</span>
+          </button>
+        </div>
       </div>
-      <p class="rent-amount">
+      <p class="rent-amount" aria-live="polite">
         Total Rent Due: <span>${{ rentAmount.toFixed(2) }}</span>
       </p>
     </div>
@@ -97,9 +106,10 @@ onMounted(() => {
 
 <style scoped>
 .container {
+  width: 100%;
   max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 1rem auto;
+  padding: clamp(1rem, 5vw, 2rem);
   text-align: center;
   background-color: var(--surface-1);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -108,17 +118,25 @@ onMounted(() => {
 
 .title {
   color: var(--text-1);
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: clamp(1rem, 4vw, 2rem);
   font-weight: 600;
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title-icon {
+  height: clamp(50px, 15vw, 100px);
+  width: auto;
+  object-fit: contain;
 }
 
 .rent-info {
-  margin-top: 2rem;
-  padding: 2rem;
+  margin-top: clamp(1rem, 4vw, 2rem);
+  padding: clamp(1rem, 4vw, 2rem);
   border: 2px solid var(--surface-3);
   border-radius: 12px;
   background-color: var(--surface-2);
@@ -126,29 +144,45 @@ onMounted(() => {
 
 .navigation {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1rem, 4vw, 2rem);
   gap: 1rem;
 }
 
+.button-group {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
 .period {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3vw, 1.2rem);
   color: var(--text-2);
   font-weight: 500;
-  flex-grow: 1;
+  width: 100%;
+  text-align: center;
+  margin: 0;
 }
 
 .nav-button {
-  padding: 0.75rem 1.5rem;
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.5rem);
   background-color: var(--primary);
   color: var(--text-1);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
   font-weight: 500;
   transition: all 0.2s ease;
+  flex: 1;
+  max-width: 150px;
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .nav-button:hover {
@@ -156,40 +190,47 @@ onMounted(() => {
   transform: translateY(-1px);
 }
 
-.nav-button:focus {
+.nav-button:focus-visible {
   outline: 2px solid var(--primary-light);
   outline-offset: 2px;
 }
 
+.nav-button:active {
+  transform: translateY(1px);
+}
+
 .rent-amount {
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
   color: var(--text-2);
-  margin-top: 1rem;
+  margin-top: clamp(1rem, 3vw, 1.5rem);
 }
 
 .rent-amount span {
   font-weight: 600;
   color: var(--accent);
-  font-size: 1.75rem;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+  display: block;
+  margin-top: 0.5rem;
 }
 
-@media (max-width: 640px) {
-  .container {
-    margin: 1rem;
-    padding: 1rem;
+@media (max-width: 480px) {
+  .button-group {
+    padding: 0 1rem;
   }
 
-  .title {
-    font-size: 2rem;
+  .nav-button {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .nav-button {
+    border: 2px solid ButtonText;
   }
 
-  .navigation {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .period {
-    order: -1;
+  .rent-info {
+    border: 2px solid ButtonText;
   }
 }
 </style>
