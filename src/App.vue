@@ -13,9 +13,10 @@
     </h1>
     <div class="rent-info" role="main" aria-labelledby="page-title">
       <div class="navigation" role="group" aria-label="Period navigation">
-        <p class="period" aria-live="polite">
-          Current Period: {{ rentPeriodDisplay }}
-        </p>
+        <div class="period-container">
+          <p class="period-label">Current Period:</p>
+          <p class="period" aria-live="polite">{{ rentPeriodDisplay }}</p>
+        </div>
         <div class="button-group">
           <button
             class="nav-button"
@@ -48,6 +49,29 @@ const rentAmount = ref(0);
 const rentPeriodDisplay = ref("");
 const monthOffset = ref(0);
 
+// Add a helper function for ordinal suffixes
+const getOrdinalSuffix = (day) => {
+  if (day > 3 && day < 21) return "th";
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+};
+
+const formatDate = (date) => {
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const day = date.getDate();
+  const year = date.getFullYear();
+  const suffix = getOrdinalSuffix(day);
+  return `${month} ${day}${suffix}, ${year}`;
+};
+
 const calculateRent = () => {
   const today = new Date();
   let startDate = new Date();
@@ -75,8 +99,8 @@ const calculateRent = () => {
   // Calculate rent
   rentAmount.value = daysDiff * DAILY_RATE;
 
-  // Update period display
-  rentPeriodDisplay.value = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+  // Update period display with new format
+  rentPeriodDisplay.value = `${formatDate(startDate)} - ${formatDate(endDate)}`;
 };
 
 // Add navigation functions
@@ -147,7 +171,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   margin-bottom: clamp(1rem, 4vw, 2rem);
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .button-group {
@@ -157,13 +181,31 @@ onMounted(() => {
   justify-content: center;
 }
 
+.period-container {
+  background-color: var(--surface-3);
+  padding: 1rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.period-label {
+  color: var(--text-2);
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .period {
   font-size: clamp(1rem, 3vw, 1.2rem);
-  color: var(--text-2);
-  font-weight: 500;
+  color: var(--text-1);
+  font-weight: 600;
   width: 100%;
   text-align: center;
   margin: 0;
+  line-height: 1.6;
 }
 
 .nav-button {
@@ -220,6 +262,10 @@ onMounted(() => {
 
   .nav-button {
     padding: 0.75rem 1rem;
+  }
+
+  .period-container {
+    padding: 0.75rem;
   }
 }
 
