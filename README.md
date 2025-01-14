@@ -1,6 +1,6 @@
 # rent-calculator
 
-This template should help get you started developing with Vue 3 in Vite.
+Very simple app just to help me calculate the rent and give to my roommates. Generated with AI using Cursor.
 
 ## Recommended IDE Setup
 
