@@ -1,13 +1,32 @@
 <template>
   <div class="container">
-    <h1>Monthly Rent Calculator</h1>
+    <h1 class="title">
+      Monthly Rent Calculator
+      <img
+        style="margin-left: 2rem"
+        src="/home.png"
+        height="100"
+        width="100"
+        alt="Home"
+      />
+    </h1>
     <div class="rent-info">
       <div class="navigation">
-        <button @click="previousMonth">&lt; Previous</button>
-        <p>Current Period: {{ rentPeriodDisplay }}</p>
-        <button @click="nextMonth">Next &gt;</button>
+        <button
+          class="nav-button"
+          @click="previousMonth"
+          aria-label="Previous month"
+        >
+          &lt; Previous
+        </button>
+        <p class="period">Current Period: {{ rentPeriodDisplay }}</p>
+        <button class="nav-button" @click="nextMonth" aria-label="Next month">
+          Next &gt;
+        </button>
       </div>
-      <p>Total Rent Due: ${{ rentAmount.toFixed(2) }}</p>
+      <p class="rent-amount">
+        Total Rent Due: <span>${{ rentAmount.toFixed(2) }}</span>
+      </p>
     </div>
   </div>
 </template>
@@ -78,36 +97,99 @@ onMounted(() => {
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 2rem auto;
-  padding: 1rem;
+  padding: 2rem;
   text-align: center;
+  background-color: var(--surface-1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+.title {
+  color: var(--text-1);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: end;
+  justify-content: center;
 }
 
 .rent-info {
   margin-top: 2rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 2rem;
+  border: 2px solid var(--surface-3);
+  border-radius: 12px;
+  background-color: var(--surface-2);
 }
 
 .navigation {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #2c3e50;
-  color: white;
+.period {
+  font-size: 1.2rem;
+  color: var(--text-2);
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.nav-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: var(--text-1);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-button:hover {
-  background-color: #34495e;
+.nav-button:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.nav-button:focus {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+.rent-amount {
+  font-size: 1.5rem;
+  color: var(--text-2);
+  margin-top: 1rem;
+}
+
+.rent-amount span {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 1.75rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .period {
+    order: -1;
+  }
 }
 </style>
